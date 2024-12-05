@@ -34,4 +34,10 @@ after these 4 above command, you will see a new folder called migrations in pris
 14. "dev": " npm run build && concurrently \"npx tsc -w\" \"nodemon --exec ts-node src/index.ts \"" 
 15. in Terminal =>
 run => npm run dev
-       curl localhost:8000
+
+16. What happening here we have already created 10 documents in project.json  and if i create now then it will show an error bcoz it will create id : 1 but we have already given 1 id.   
+so we have write this command in pgadmin4 => Query Tool (option present in top bottom like an icon)
+SELECT setval(pg_get_serial_sequence('"[DATA_MODEL_NAME_HERE]"', 'id'), coalesce(max(id)+1, 1), false) FROM "[DATA_MODEL_NAME_HERE]";
+example=> 
+SELECT setval(pg_get_serial_sequence('"Project"', 'id'), coalesce(max(id)+1, 1), false) FROM "Project";
+and then click on execute script icon
