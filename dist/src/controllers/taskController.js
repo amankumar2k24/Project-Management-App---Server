@@ -17,24 +17,26 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const tasks = yield prisma.task.findMany({
             where: {
-                projectId: Number(projectId)
+                projectId: Number(projectId),
             },
             include: {
                 author: true,
                 assignee: true,
                 comments: true,
-                attachments: true
+                attachments: true,
             },
         });
         res.json(tasks);
     }
     catch (error) {
-        res.status(500).json({ message: error.message || "Error in fetching tasks" });
+        res
+            .status(500)
+            .json({ message: error.message || "Error in fetching tasks" });
     }
 });
 exports.getTasks = getTasks;
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId } = req.body;
+    const { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, } = req.body;
     try {
         const newTask = yield prisma.task.create({
             data: {
@@ -49,12 +51,14 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 projectId,
                 authorUserId,
                 assignedUserId,
-            }
+            },
         });
         res.status(201).json(newTask);
     }
     catch (error) {
-        res.status(500).json({ message: error.message || "Error while creating task" });
+        res
+            .status(500)
+            .json({ message: error.message || "Error while creating task" });
     }
 });
 exports.createTask = createTask;
@@ -64,12 +68,14 @@ const updatedTask = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         const updatedTask = yield prisma.task.update({
             where: { id: Number(taskId) },
-            data: { status: status }
+            data: { status: status },
         });
         res.status(200).json(updatedTask);
     }
     catch (error) {
-        res.status(500).json({ message: error.message || "Error while updating task" });
+        res
+            .status(500)
+            .json({ message: error.message || "Error while updating task" });
     }
 });
 exports.updatedTask = updatedTask;
