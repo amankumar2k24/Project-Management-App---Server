@@ -7,7 +7,8 @@ import helmet from "helmet";
 // ROUTE IMPORTS
 import projectRoutes from "./routes/projectRoute";
 import taskRoutes from "./routes/taskRoute";
-import searchRputes from "./routes/searchRoute";
+import searchRoutes from "./routes/searchRoute";
+import userRoutes from "./routes/userRoute"
 
 // CONFIGURATIONS
 dotenv.config();
@@ -27,7 +28,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
-app.use("/api/search", searchRputes);
+app.use("/api/search", searchRoutes);
+app.use("/api/user", userRoutes);
 
 // SERVER
 const PORT = process.env.PORT || 5000;
