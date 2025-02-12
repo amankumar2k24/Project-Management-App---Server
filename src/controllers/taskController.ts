@@ -25,44 +25,15 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const createTask = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  const {
-    title,
-    description,
-    status,
-    priority,
-    tags,
-    startDate,
-    dueDate,
-    points,
-    projectId,
-    authorUserId,
-    assignedUserId,
-  } = req.body;
+export const createTask = async (req: Request, res: Response): Promise<void> => {
+  const { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, } = req.body;
   try {
     const newTask = await prisma.task.create({
-      data: {
-        title,
-        description,
-        status,
-        priority,
-        tags,
-        startDate,
-        dueDate,
-        points,
-        projectId,
-        authorUserId,
-        assignedUserId,
-      },
+      data: { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, },
     });
     res.status(201).json(newTask);
   } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: error.message || "Error while creating task" });
+    res.status(500).json({ message: error.message || "Error while creating task" });
   }
 };
 
@@ -77,8 +48,6 @@ export const updatedTask = async (req: Request, res: Response) => {
     });
     res.status(200).json(updatedTask);
   } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: error.message || "Error while updating task" });
+    res.status(500).json({ message: error.message || "Error while updating task" });
   }
 };

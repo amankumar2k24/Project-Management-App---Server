@@ -39,26 +39,12 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, } = req.body;
     try {
         const newTask = yield prisma.task.create({
-            data: {
-                title,
-                description,
-                status,
-                priority,
-                tags,
-                startDate,
-                dueDate,
-                points,
-                projectId,
-                authorUserId,
-                assignedUserId,
-            },
+            data: { title, description, status, priority, tags, startDate, dueDate, points, projectId, authorUserId, assignedUserId, },
         });
         res.status(201).json(newTask);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: error.message || "Error while creating task" });
+        res.status(500).json({ message: error.message || "Error while creating task" });
     }
 });
 exports.createTask = createTask;
@@ -73,9 +59,7 @@ const updatedTask = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).json(updatedTask);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: error.message || "Error while updating task" });
+        res.status(500).json({ message: error.message || "Error while updating task" });
     }
 });
 exports.updatedTask = updatedTask;
