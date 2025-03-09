@@ -17,7 +17,8 @@
 - **Activate nvm:**
 
   ```
-  . ~/.nvm/nvm.sh
+  . ~/.nvm/nvm.sh          // for Amazon Linux
+  source ~/.bashrc         // for Ubuntu 
   ```
 
 - **Install the latest version of Node.js using nvm:**
@@ -41,11 +42,14 @@
 - **Update the system and install Git:**
 
   ```
-  sudo yum update -y
+  sudo yum update -y   // for Amazon Linux
+  sudo apt update -y   // for Ubuntu
   ```
 
   ```
-  sudo yum install git -y
+  sudo yum install git -y         // for Amazon Linux
+  sudo apt install git -y         // for Ubuntu
+
   ```
 
 - **Check Git version:**
@@ -96,8 +100,8 @@
 - **Create a pm2 ecosystem configuration file (inside server directory):**
 
   ```
-  module.exports = { apps : [{ name: 'inventory-management', script: 'npm', args: 'run dev', env: { NODE_ENV: 'development', ENV_VAR1: 'environment-variable', } }], };
-  ```
+  module.exports = { apps : [{ name: 'inventory-management', script: 'npm', args: 'run dev', env: { NODE_ENV: 'development', ENV_VAR1: 'environment-variable', } }], };                // no need of this command in Ubuntu
+  ``` 
 
 - **Modify the ecosystem file if necessary:**
 
@@ -108,7 +112,9 @@
 - **Set pm2 to restart automatically on system reboot:**
 
   ```
-  sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $USER --hp $(eval echo ~$USER)
+  sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $USER --hp $(eval echo ~$USER)       //for Amazon Linux
+  sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u ubuntu --hp /home/ubuntu             //for Ubuntu
+
   ```
 
 - **Start the application using the pm2 ecosystem configuration:**
