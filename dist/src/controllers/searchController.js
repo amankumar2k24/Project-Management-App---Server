@@ -15,25 +15,26 @@ const prisma = new client_1.PrismaClient();
 const search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { query } = req.query;
     try {
+        const searchQuery = query ? query.toLowerCase() : "";
         const tasks = yield prisma.task.findMany({
             where: {
                 OR: [
-                    { title: { contains: query } },
-                    { description: { contains: query } }
+                    { title: { contains: searchQuery, mode: "insensitive" } },
+                    { description: { contains: searchQuery, mode: "insensitive" } }
                 ],
             },
         });
         const projects = yield prisma.project.findMany({
             where: {
                 OR: [
-                    { name: { contains: query } },
-                    { description: { contains: query } }
+                    { name: { contains: searchQuery, mode: "insensitive" } },
+                    { description: { contains: searchQuery, mode: "insensitive" } }
                 ],
             },
         });
         const users = yield prisma.user.findMany({
             where: {
-                OR: [{ username: { contains: query } }],
+                OR: [{ username: { contains: searchQuery, mode: "insensitive" } }],
             },
         });
         res.status(200).json({ tasks, projects, users });

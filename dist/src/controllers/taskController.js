@@ -9,29 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatedTask = exports.createTask = exports.getTasks = void 0;
+exports.getUserTasks = exports.updatedTask = exports.createTask = exports.getTasks = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { projectId } = req.query;
     try {
         const tasks = yield prisma.task.findMany({
-            where: {
-                projectId: Number(projectId),
-            },
-            include: {
-                author: true,
-                assignee: true,
-                comments: true,
-                attachments: true,
-            },
+            where: { projectId: Number(projectId), },
+            include: { author: true, assignee: true, comments: true, attachments: true, },
         });
         res.json(tasks);
     }
     catch (error) {
-        res
-            .status(500)
-            .json({ message: error.message || "Error in fetching tasks" });
+        res.status(500).json({ message: error.message || "Error in fetching tasks" });
     }
 });
 exports.getTasks = getTasks;
@@ -44,6 +35,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(201).json(newTask);
     }
     catch (error) {
+        console.log("error while creatingTask", error);
         res.status(500).json({ message: error.message || "Error while creating task" });
     }
 });
@@ -63,3 +55,23 @@ const updatedTask = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updatedTask = updatedTask;
+const getUserTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    console.log("userID", userId);
+    try {
+        const tasks = yield prisma.task.findMany({
+            where: {
+                OR: [
+                    { assignedUserId: Number(userId) },
+                    { authorUserId: Number(userId) }
+                ]
+            },
+            include: { author: true, assignee: true }
+        });
+        res.json(tasks);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message || "Error while getting user tasks" });
+    }
+});
+exports.getUserTasks = getUserTasks;

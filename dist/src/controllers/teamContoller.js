@@ -15,20 +15,21 @@ const prisma = new client_1.PrismaClient();
 const getTeams = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const teams = yield prisma.team.findMany();
-        const teamsWithUsernames = yield Promise.all(teams.map((team) => __awaiter(void 0, void 0, void 0, function* () {
+        const teamsWithUserNames = yield Promise.all(teams.map((team) => __awaiter(void 0, void 0, void 0, function* () {
             const productOwner = yield prisma.user.findUnique({
-                where: { userId: team.productOwnerUserId, },
+                where: { userId: team.productOwnerUserId },
                 select: { username: true }
             });
             const productManager = yield prisma.user.findUnique({
-                where: { userId: team.productManagerUserId, },
+                where: { userId: team.projectManagerUserId },
                 select: { username: true }
             });
             return Object.assign(Object.assign({}, team), { productOwnerUsername: productOwner === null || productOwner === void 0 ? void 0 : productOwner.username, productManagerUsername: productManager === null || productManager === void 0 ? void 0 : productManager.username });
         })));
-        res.json(teamsWithUsernames);
+        res.json(teamsWithUserNames);
     }
     catch (error) {
+        console.log("error", error);
         res.status(500).json({ error: error.message || "Error getting teams" });
     }
 });
