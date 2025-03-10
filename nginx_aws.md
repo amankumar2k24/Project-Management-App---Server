@@ -96,7 +96,27 @@ certbot renew --dry-run
 dig +trace www.project-management.publicvm.com
 
 
-<!-- More Extra commands -->
+<!-------------------------------- More Extra commands ---------------------------------->
 ## To check SSL working or not
 curl -I https://project-management.publicvm.com
 <!-- If it returns 200 OK, SSL is working. or If it fails, check the error message and share it here. -->
+
+
+#### To Run project with PM2 even if your machine is not open
+## Connect to your Ubuntu machine (EC2 instance) via SSH
+ssh ubuntu@your-server-ip
+
+## Install pm2 globally
+npm install -g pm2
+
+## Navigate to your project directory
+cd /path/to/your/project
+
+## Start your application using pm2
+pm2 start npm --name "inventory-management" -- run dev
+
+## Save the pm2 process so it restarts after reboot
+pm2 save
+
+## Enable pm2 to start on boot
+sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u ubuntu --hp /home/ubuntu
