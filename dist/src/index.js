@@ -35,7 +35,7 @@ app.use("/api/search", searchRoute_1.default);
 app.use("/api/user", userRoute_1.default);
 app.use("/api/team", teamRoute_1.default);
 // SERVER
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("Server is running on port", PORT);
 });
