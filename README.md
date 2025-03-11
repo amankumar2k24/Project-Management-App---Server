@@ -20,7 +20,7 @@ in scripts: {
 7. npx prisma generate
 8. npx prisma migrate dev --name init
 9. npm run seed
-
+    
 after these 4 above command, you will see a new folder called migrations in prisma folder and in pgadmin there is lots of table like you created here in schema.prisma
 
 
