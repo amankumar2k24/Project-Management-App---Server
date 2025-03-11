@@ -102,7 +102,7 @@ curl -I https://project-management.publicvm.com
 <!-- If it returns 200 OK, SSL is working. or If it fails, check the error message and share it here. -->
 
 
-#### To Run project with PM2 even if your machine is not open
+#### To Run project with PM2 even if your machine is not open==============================
 ## Connect to your Ubuntu machine (EC2 instance) via SSH
 ssh ubuntu@your-server-ip
 
@@ -120,3 +120,35 @@ pm2 save
 
 ## Enable pm2 to start on boot
 sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u ubuntu --hp /home/ubuntu
+
+
+## To run prisma ==========================================================================
+# 1. If your EC2 instance has low RAM or CPU, Prisma commands can slow down.
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+# 2. Try clearing the cache and regenerating Prisma Client:
+rm -rf node_modules/.prisma
+npx prisma generate
+
+# 3. Your .env file should have the correct DATABASE_URL
+DATABASE_URL="postgresql://postgres:Paulpheonix98125@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
+<!-- Make sure there's no ?schema=public at the end, as psql was giving errors for that. -->
+
+# 4. Run this command to install the PostgreSQL client tools:
+sudo apt install postgresql-client
+
+# 5. check if psql is installed:
+psql --version
+
+# 6. Test database connection 
+psql "postgres://USERNAME:PASSWORD@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
+
+## Time to run prisma commandss-------------
+1. npx prisma generate
+2. npx prisma migrate dev --name init
+3. npm run seed
+
+
