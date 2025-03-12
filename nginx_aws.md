@@ -152,3 +152,5 @@ psql "postgres://USERNAME:PASSWORD@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.
 3. npm run seed
 
 
+## IMPORTANT PASSWORDS
+Aws Amplify or RDS banate waqt ek password dala tha; password is:- Paulpheonix98125
