@@ -36,6 +36,7 @@ jobs:
           node-version: 18
 
       - run: npm ci --include=dev  # Install all dependencies (including devDependencies)
+
       - name: Build the project
         run: npm run build
 
@@ -47,21 +48,33 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > private_key.pem
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem $EC2_USER@$EC2_HOST << 'EOF'
+            set -e  # Exit immediately if a command exits with a non-zero status
+
+            echo "Navigating to the project folder on EC2..."
             cd /home/ubuntu/Project-Management-App---Server  
+
+            echo "Resetting and pulling the latest changes from GitHub..."
             git reset --hard
             git pull origin main
 
             echo "Installing dependencies on EC2..."
-            npm ci --include=dev || echo "Failed to install dependencies"
+            npm ci --include=dev
 
-            echo "Building the project..."
-            npm run build || echo "Build failed"
+            echo "Building the project on EC2..."
+            npm run build
 
-            echo "Checking if PM2 is running..."
-            pm2 describe dist/src/index.js || pm2 start dist/src/index.js --update-env
-            pm2 restart dist/src/index.js --update-env && pm2 logs --lines 50
+            echo "Stopping any existing PM2 processes to avoid duplicates..."
+            pm2 kill
+
+            echo "Starting the app with PM2..."
+            pm2 start dist/src/index.js --name "project-management-app" --update-env
             
-            echo "Saving PM2 process and ensuring startup"
+            echo "Restarting the PM2 process..."
+            pm2 restart "project-management-app" --update-env && pm2 logs --lines 50
+
+            echo "Saving the PM2 process list and setting up PM2 to restart on reboot..."
             pm2 save
             sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
-          EOF
+
+            echo "Deployment completed successfully!"
+          EOF 
