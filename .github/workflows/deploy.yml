@@ -57,7 +57,11 @@ jobs:
             echo "Building the project..."
             npm run build || echo "Build failed"
 
-            pm2 restart dist/src/index.js --update-env
+            echo "Checking if PM2 is running..."
+            pm2 describe dist/src/index.js || pm2 start dist/src/index.js --update-env
+            pm2 restart dist/src/index.js --update-env && pm2 logs --lines 50
+            
+            echo "Saving PM2 process and ensuring startup"
             pm2 save
             sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
           EOF
