@@ -1,0 +1,47 @@
+name: Node.js CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Runs the workflow on every push to the `main` branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # GitHub-hosted runner
+
+    env:  # Add your environment variables if needed
+      EC2_USER: ${{secrets.EC2_USER}}
+      EC2_HOST: ${{secrets.EC2_HOST}}
+      PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+      NODE_ENV: production
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install dependencies and build the project
+      - name: Install Node.js, npm, and dependencies
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm ci
+      - name: Build the project
+        run: npm run build
+
+      # Step 3: Deploy to AWS EC2 via SSH
+      - name: Deploy to EC2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $EC2_USER@$EC2_HOST << 'EOF'
+            cd /home/ubuntu/Project-Management-App---Server  
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart dist/index.js  # Updated entry point file
+            pm2 save
+            sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
+          EOF

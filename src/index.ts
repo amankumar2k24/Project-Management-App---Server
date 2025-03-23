@@ -27,6 +27,10 @@ app.get("/", (req, res) => {
   res.send("This is home route");
 });
 
+app.get("/aman", (req, res) => {
+  res.send("This is Aman route");
+});
+
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
 app.use("/api/search", searchRoutes);

@@ -70,7 +70,7 @@ Add the following to the location part of the server block
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
-    }
+    }sfdsfdsdfsfertgwcsdfhsdawjkoiloooswdasdsdes
 ```
 ```
 # Check NGINX config
