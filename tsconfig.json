@@ -1,23 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es2018", // Fixes 'finally' error on promises
-    "lib": [
-      "es2018",
-      "dom"
-    ], // Supports modern features and browser APIs
+    "target": "es2018",
+    "lib": ["es2018", "dom"],
     "module": "commonjs",
-    "rootDir": ".", // Set rootDir to the project root to include both src and prisma
+    "rootDir": ".",
     "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"], // Add this line to include Node.js types
+    "resolveJsonModule": true // Optional if you import JSON files
   },
-  "include": [
-    "src",
-    "prisma"
-  ], // Include all necessary folders
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "prisma"],
+  "exclude": ["node_modules"]
 }
