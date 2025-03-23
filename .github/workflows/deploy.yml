@@ -38,10 +38,11 @@ jobs:
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem $EC2_USER@$EC2_HOST << 'EOF'
             cd /home/ubuntu/Project-Management-App---Server  
+            git reset --hard  # Discard local changes
             git pull origin main
             npm install
             npm run build
-            pm2 restart dist/index.js  # Updated entry point file
+            pm2 restart dist/src/index.js --update-env
             pm2 save
             sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
           EOF
