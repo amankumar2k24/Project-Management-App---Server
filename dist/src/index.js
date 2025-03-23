@@ -29,6 +29,9 @@ app.use((0, morgan_1.default)("common"));
 app.get("/", (req, res) => {
     res.send("This is home route");
 });
+app.get("/aman", (req, res) => {
+    res.send("This is Aman route");
+});
 app.use("/api/project", projectRoute_1.default);
 app.use("/api/task", taskRoute_1.default);
 app.use("/api/search", searchRoute_1.default);
