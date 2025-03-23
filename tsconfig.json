@@ -16,9 +16,6 @@
       "./node_modules/@types",
       "@types"
     ],
-    "types": [
-      "node"
-    ], // Add this line to include Node.js types
     "resolveJsonModule": true // Optional if you import JSON files
   },
   "include": [
