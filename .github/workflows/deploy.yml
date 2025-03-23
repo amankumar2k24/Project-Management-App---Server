@@ -3,13 +3,13 @@ name: Node.js CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Runs the workflow on every push to the `main` branch
+      - main  
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # GitHub-hosted runner
+    runs-on: ubuntu-latest  
 
-    env:  # Add your environment variables if needed
+    env:  
       EC2_USER: ${{secrets.EC2_USER}}
       EC2_HOST: ${{secrets.EC2_HOST}}
       PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -20,17 +20,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Install dependencies and build the project
+      # Step 2: Cache dependencies to speed up builds
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 3: Install dependencies and build the project
       - name: Install Node.js, npm, and dependencies
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm ci
-      - run: npm install --save-dev @types/node
+
+      - run: npm ci --include=dev  # Install all dependencies (including devDependencies)
       - name: Build the project
         run: npm run build
 
-      # Step 3: Deploy to AWS EC2 via SSH
+      # Step 4: Deploy to AWS EC2 via SSH
       - name: Deploy to EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -39,10 +48,15 @@ jobs:
           chmod 600 private_key.pem
           ssh -o StrictHostKeyChecking=no -i private_key.pem $EC2_USER@$EC2_HOST << 'EOF'
             cd /home/ubuntu/Project-Management-App---Server  
-            git reset --hard  # Discard local changes
+            git reset --hard
             git pull origin main
-            npm install
-            npm run build
+
+            echo "Installing dependencies on EC2..."
+            npm ci --include=dev || echo "Failed to install dependencies"
+
+            echo "Building the project..."
+            npm run build || echo "Build failed"
+
             pm2 restart dist/src/index.js --update-env
             pm2 save
             sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
