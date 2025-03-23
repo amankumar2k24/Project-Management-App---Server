@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
+      - run: npm install --save-dev @types/node
       - name: Build the project
         run: npm run build
 
