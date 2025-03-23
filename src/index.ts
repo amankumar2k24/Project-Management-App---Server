@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -23,11 +23,11 @@ app.use(express.json());
 app.use(morgan("common"));
 
 // ROUTES
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
   res.send("This is home route");
 });
 
-app.get("/aman", (req, res) => {
+app.get("/aman", (req: Request, res: Response) => {
   res.send("This is Aman route");
 });
 
