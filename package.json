@@ -6,14 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "ts-node prisma/seed.ts",
-    "build": "npx rimraf dist &&  npx tsc",
-    "start": "npm run build && node dist/src/index.js",
-    "dev": " npm run build && concurrently \"npx tsc -w\" \"nodemon --exec ts-node src/index.ts \""
+    "build": "npx rimraf dist && npx tsc",
+    "start": "node dist/src/index.js",
+    "dev": "concurrently \"npx tsc -w\" \"nodemon --exec ts-node src/index.ts\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
