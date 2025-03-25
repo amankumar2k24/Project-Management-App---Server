@@ -13,7 +13,6 @@ sudo apt-get update
 
 ## 3. Install Node and NPM
 ```
-curl -sL https://deb.nodesource.com/setup   _18.x | sudo -E bash -                       // if this wont run
 curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash        // run this
 
 sudo apt install nodejs
@@ -24,6 +23,7 @@ node --version
 ## 4. Clone your project from Github
 ```
 git clone [your-github-link]
+git clone https://github.com/amankumar2k24/Project-Management-App---Server.git
 ```
 
 ## 5. Install dependencies and test app
@@ -62,6 +62,7 @@ sudo vim /etc/nginx/sites-available/default           //  i prefer to run this
 Add the following to the location part of the server block
 ```
     server_name yourdomain.com www.yourdomain.com;
+    server_name project-management.publicvm.com www.project-management.publicvm.com
 
     location / {
         proxy_pass http://localhost:5000; #whatever port your app runs on
@@ -70,7 +71,7 @@ Add the following to the location part of the server block
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
-    }sfdsfdsdfsfertgwcsdfhsdawjkoiloooswdasdsdes
+    }
 ```
 ```
 # Check NGINX config
@@ -145,6 +146,8 @@ psql --version
 
 # 6. Test database connection 
 psql "postgres://USERNAME:PASSWORD@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
+
+psql "postgresql://postgres:Paulpheonix98125@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
 
 ## Time to run prisma commandss-------------
 1. npx prisma generate
