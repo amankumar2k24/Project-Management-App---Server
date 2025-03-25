@@ -99,10 +99,13 @@ jobs:
         echo "Starting the SSH agent..."
         eval $(ssh-agent -s)
 
+        echo "Creating .ssh directory..."
+        mkdir -p ~/.ssh  # Ensure the .ssh folder exists
+
         echo "Adding the private key to SSH..."
         echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ls -al ~/.ssh
+        chmod 600 ~/.ssh/id_rsa  # Set appropriate permissions
+        ls -al ~/.ssh  # List the files to confirm
         ssh-add ~/.ssh/id_rsa
         echo "SSH key added!"
       env:
