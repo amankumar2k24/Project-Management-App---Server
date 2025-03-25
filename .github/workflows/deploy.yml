@@ -1,66 +1,3 @@
-## Working CI CD  
-# name: Deploy to EC2
-
-# on:
-#   push:
-#     branches:
-#       - main  
-
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v3
-
-#     - name: Start SSH agent and add key
-#       run: |
-#         echo "Starting the SSH agent..."
-#         eval $(ssh-agent -s)
-
-#         echo "Creating .ssh directory..."
-#         mkdir -p ~/.ssh  # Ensure the .ssh folder exists
-
-#         echo "Adding the private key to SSH..."
-#         echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-#         chmod 600 ~/.ssh/id_rsa  # Set appropriate permissions
-#         ls -al ~/.ssh  # List the files to confirm
-#         ssh-add ~/.ssh/id_rsa
-#         echo "SSH key added!"
-#       env:
-#         EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-
-#     - name: Test SSH Connection
-#       run: ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "echo SSH connection successful"
-#       env:
-#         EC2_USER: ubuntu
-#         EC2_HOST: ${{ secrets.EC2_HOST }}
-
-#     - name: Deploy to EC2
-#       run: |
-#         ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-#           echo "Navigating to project folder..."
-#           cd /home/ubuntu/Project-Management-App---Server
-  
-#           echo "Resetting and pulling the latest changes from GitHub..."
-#           git reset --hard
-#           git pull origin main
-  
-#           echo "Installing dependencies..."
-#           npm ci --include=dev
-  
-#           echo "Restarting PM2 process..."
-#           # pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
-#           pm2 restart project-management
-#           pm2 save
-  
-#           echo "Deployment completed successfully!"
-#         EOF
-#       env:
-#         EC2_USER: ${{ secrets.EC2_USER }}
-#         EC2_HOST: ${{ secrets.EC2_HOST }}
-
 name: Deploy to EC2
 
 on:
@@ -98,7 +35,7 @@ jobs:
             git reset --hard
             git pull origin main
 
-            echo "Installing only production dependencies..."
+            echo "Installing dependencies..."
             npm ci --include=dev
 
             echo "Restarting the PM2 process..."
