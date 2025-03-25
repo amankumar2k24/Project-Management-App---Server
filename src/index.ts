@@ -27,8 +27,8 @@ app.get("/", (req: Request, res: Response) => {
   res.send("This is home route");
 });
 
-app.get("/aman", (req: Request, res: Response) => {
-  res.send("This is aman route");
+app.get("/vikas", (req: Request, res: Response) => {
+  res.send("This is vikas route");
 });
 
 app.use("/api/project", projectRoutes);
