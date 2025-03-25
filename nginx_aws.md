@@ -102,6 +102,9 @@ dig +trace www.project-management.publicvm.com
 curl -I https://project-management.publicvm.com
 <!-- If it returns 200 OK, SSL is working. or If it fails, check the error message and share it here. -->
 
+## To add env file in ubuntu machine
+touch .env
+sudo vim .env
 
 #### To Run project with PM2 even if your machine is not open==============================
 ## Connect to your Ubuntu machine (EC2 instance) via SSH
@@ -114,7 +117,7 @@ npm install -g pm2
 cd /path/to/your/project
 
 ## Start your application using pm2
-pm2 start npm --name "inventory-management" -- run dev
+pm2 start npm --name "project-management" -- run dev
 
 ## Save the pm2 process so it restarts after reboot
 pm2 save
@@ -146,7 +149,6 @@ psql --version
 
 # 6. Test database connection 
 psql "postgres://USERNAME:PASSWORD@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
-
 psql "postgresql://postgres:Paulpheonix98125@pm-rds.c520o280al61.ap-south-1.rds.amazonaws.com:5432/projectmanagement"
 
 ## Time to run prisma commandss-------------
