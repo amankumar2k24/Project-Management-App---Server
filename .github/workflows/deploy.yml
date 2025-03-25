@@ -131,7 +131,8 @@ jobs:
           npm ci --include=dev
   
           echo "Restarting PM2 process..."
-          pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+          # pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+          pm2 restart all
           pm2 save
   
           echo "Deployment completed successfully!"
