@@ -1,4 +1,4 @@
-# Node.js Deployment
+# Node.js Deployment - Main File for Deploy to EC2
 
 > Steps to deploy a Node.js app to AWS using PM2, NGINX as a reverse proxy and an SSL from LetsEncrypt
 
