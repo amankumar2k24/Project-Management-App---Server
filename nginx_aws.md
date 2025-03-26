@@ -13,7 +13,7 @@ sudo apt-get update
 
 ## 3. Install Node and NPM
 ```
-curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash        // run this
+curl -fsSL  https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash        // run this
 
 sudo apt install nodejs
 
