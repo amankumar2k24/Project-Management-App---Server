@@ -1,113 +1,113 @@
-name: Deploy to EC2
-
-on:
-  push:
-    branches:
-      - main  # Trigger deployment on push to the 'main' branch
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    env:
-      EC2_USER: ${{ secrets.EC2_USER }}
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-
-    steps:
-      # Step 1: Checkout repository
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Step 2: Set up SSH and add private key
-      - name: Set up SSH connection
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
-
-      # Step 3: Deploy the application to EC2
-      - name: Deploy to EC2
-        run: |
-          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            echo "Navigating to project directory on EC2..."
-            cd /home/ubuntu/Project-Management-App---Server
-
-            echo "Resetting and pulling the latest changes from GitHub..."
-            git reset --hard
-            git pull origin main
-
-            echo "Installing dependencies..."
-            npm ci --include=dev
-
-            echo "Restarting the PM2 process..."
-            pm2 restart project-management || pm2 start dist/src/index.js --name project-management
-
-            echo "Saving PM2 state and enabling startup on reboot..."
-            pm2 save
-            sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
-
-            echo "Deployment completed successfully!"
-          EOF
-
-## Working CICD PIPELINE if above Pipeline wont work
 # name: Deploy to EC2
 
 # on:
 #   push:
 #     branches:
-#       - main  
+#       - main  # Trigger deployment on push to the 'main' branch
 
 # jobs:
 #   deploy:
 #     runs-on: ubuntu-latest
 
+#     env:
+#       EC2_USER: ${{ secrets.EC2_USER }}
+#       EC2_HOST: ${{ secrets.EC2_HOST }}
+
 #     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v3
+#       # Step 1: Checkout repository
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-#     - name: Start SSH agent and add key
-#       run: |
-#         echo "Starting the SSH agent..."
-#         eval $(ssh-agent -s)
+#       # Step 2: Set up SSH and add private key
+#       - name: Set up SSH connection
+#         uses: webfactory/ssh-agent@v0.5.3
+#         with:
+#           ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
 
-#         echo "Creating .ssh directory..."
-#         mkdir -p ~/.ssh  # Ensure the .ssh folder exists
+#       # Step 3: Deploy the application to EC2
+#       - name: Deploy to EC2
+#         run: |
+#           ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+#             echo "Navigating to project directory on EC2..."
+#             cd /home/ubuntu/Project-Management-App---Server
 
-#         echo "Adding the private key to SSH..."
-#         echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-#         chmod 600 ~/.ssh/id_rsa  # Set appropriate permissions
-#         ls -al ~/.ssh  # List the files to confirm
-#         ssh-add ~/.ssh/id_rsa
-#         echo "SSH key added!"
-#       env:
-#         EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+#             echo "Resetting and pulling the latest changes from GitHub..."
+#             git reset --hard
+#             git pull origin main
 
-#     - name: Test SSH Connection
-#       run: ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "echo SSH connection successful"
-#       env:
-#         EC2_USER: ubuntu
-#         EC2_HOST: ${{ secrets.EC2_HOST }}
+#             echo "Installing dependencies..."
+#             npm ci --include=dev
 
-#     - name: Deploy to EC2
-#       run: |
-#         ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-#           echo "Navigating to project folder..."
-#           cd /home/ubuntu/Project-Management-App---Server
+#             echo "Restarting the PM2 process..."
+#             pm2 restart project-management || pm2 start dist/src/index.js --name project-management
+
+#             echo "Saving PM2 state and enabling startup on reboot..."
+#             pm2 save
+#             sudo env PATH=$PATH:$(which node) $(which pm2) startup systemd -u $EC2_USER --hp /home/$EC2_USER
+
+#             echo "Deployment completed successfully!"
+#           EOF
+
+## Working CICD PIPELINE if above Pipeline wont work
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Start SSH agent and add key
+      run: |
+        echo "Starting the SSH agent..."
+        eval $(ssh-agent -s)
+
+        echo "Creating .ssh directory..."
+        mkdir -p ~/.ssh  # Ensure the .ssh folder exists
+
+        echo "Adding the private key to SSH..."
+        echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa  # Set appropriate permissions
+        ls -al ~/.ssh  # List the files to confirm
+        ssh-add ~/.ssh/id_rsa
+        echo "SSH key added!"
+      env:
+        EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+
+    - name: Test SSH Connection
+      run: ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "echo SSH connection successful"
+      env:
+        EC2_USER: ubuntu
+        EC2_HOST: ${{ secrets.EC2_HOST }}
+
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          echo "Navigating to project folder..."
+          cd /home/ubuntu/Project-Management-App---Server
   
-#           echo "Resetting and pulling the latest changes from GitHub..."
-#           git reset --hard
-#           git pull origin main
+          echo "Resetting and pulling the latest changes from GitHub..."
+          git reset --hard
+          git pull origin main
   
-#           echo "Installing dependencies..."
-#           npm ci --include=dev
+          echo "Installing dependencies..."
+          npm ci --include=dev
   
-#           echo "Restarting PM2 process..."
-#           # pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
-#           pm2 restart project-management
-#           pm2 save
+          echo "Restarting PM2 process..."
+          # pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js
+          pm2 restart project-management
+          pm2 save
   
-#           echo "Deployment completed successfully!"
-#         EOF
-#       env:
-#         EC2_USER: ${{ secrets.EC2_USER }}
-#         EC2_HOST: ${{ secrets.EC2_HOST }}
+          echo "Deployment completed successfully!"
+        EOF
+      env:
+        EC2_USER: ${{ secrets.EC2_USER }}
+        EC2_HOST: ${{ secrets.EC2_HOST }}
   
